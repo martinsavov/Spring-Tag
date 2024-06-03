@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combine User Input</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #output {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            word-wrap: break-word;
+            margin-top: 10px;
+        }
+
+        #copyButton {
+            background-color: #28a745;
+            margin-top: 10px;
+        }
+
+        #copyButton:hover {
+            background-color: #218838;
+        }
+
+        /* Popup styling */
+        .popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 123, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #fff;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup p {
+            margin: 0;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Combine User Input</h1>
+        
+        <label for="input1">Network Code:</label>
+        <input type="text" id="input1">
+        
+        <label for="input2">Placement Name:</label>
+        <input type="text" id="input2">
+        
+        <label for="input3">Duration:</label>
+        <input type="text" id="input3">
+        
+        <button onclick="combineInputs()">Combine</button>
+        
+        <h2>Combined Output:</h2>
+        <p id="output"></p>
+        <button id="copyButton" onclick="copyToClipboard()">Copy to Clipboard</button>
+        <p class="error" id="error"></p>
+    </div>
+
+    <div class="popup" id="popup">
+        <p>Combined output copied to clipboard!</p>
+    </div>
+    
+    <script>
+        function combineInputs() {
+            var input1 = document.getElementById('input1').value;
+            var input2 = document.getElementById('input2').value;
+            var input3 = document.getElementById('input3').value;
+
+            if (!input1 || !input2 || !input3) {
+                document.getElementById('error').innerText = 'All fields must be filled.';
+                return;
+            }
+
+            if (!validateInput(input1)) {
+                document.getElementById('error').innerText = 'Network Code can only contain numbers and commas.';
+                return;
+            }
+
+            document.getElementById('error').innerText = '';
+            
+            var combinedOutput = `https://pubads.g.doubleclick.net/gampad/ads?iu=/${input1}/${input2}&description_url={{ENCODED_URL}}&tfcd=0&npa=0&sz=1x1&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator={{CACHEBUSTER}}&max_ad_duration=${input3}&nofb=1&url={{ENCODED_URL}}&schain={{QP_schain}}&ord={{CACHEBUSTER}}`;
+        
+            document.getElementById('output').innerText = combinedOutput;
+        }
+
+        function validateInput(input) {
+            var regex = /^[0-9,]+$/;
+            return regex.test(input);
+        }
+
+        function copyToClipboard() {
+            var outputText = document.getElementById('output').innerText;
+            var tempInput = document.createElement('textarea');
+            tempInput.value = outputText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showPopup();
+        }
+
+        function showPopup() {
+            var popup = document.getElementById('popup');
+            popup.style.display = 'block';
+
+            setTimeout(function() {
+                popup.style.display = 'none';
+            }, 1500); // Popup will disappear after 1.5 seconds
+        }
+    </script>
+</body>
+</html>
